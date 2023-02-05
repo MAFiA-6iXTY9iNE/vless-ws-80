@@ -15,8 +15,8 @@ apt install ufw
 
 #firewall rules
 ufw allow 'OpenSSH'
-ufw allow 465/tcp
 ufw allow 444/tcp
+ufw allow 80/tcp
 ufw enable
 
 #running xray install script for linux - systemd
@@ -45,7 +45,7 @@ cat << EOF > /usr/local/etc/xray/config.json
   },
   "inbounds": [
     {
-      "port": 465,
+      "port": 80,
       "protocol": "vless",
       "settings": {
         "clients": [
@@ -70,28 +70,18 @@ cat << EOF > /usr/local/etc/xray/config.json
     },
     {
       "port": 444,
-      "protocol": "vmess",
+      "protocol": "vless",
       "settings": {
         "clients": [
           {
-            "id": "$UUID",
+            "id": "$UUID"
           }
-        ]
+        ],
+        "decryption": "none"
       },
       "streamSettings": {
         "network": "ws",
-        "security": "tls",
-        "wsSettings": {
-          "acceptProxyProtocol": true,
-        }
-        "tlsSettings": {
-          "certificates": [
-            {
-              "certificateFile": "/etc/xray/xray.crt",
-              "keyFile": "/etc/xray/xray.key"
-            }
-          ]
-        }
+        "security": "none"
       }
     }
   ],
